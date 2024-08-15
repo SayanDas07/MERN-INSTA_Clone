@@ -5,9 +5,11 @@ import LeftSidebar from './LeftSidebar'
 function MainLayout() {
   return (
     <div>
-        <LeftSidebar />
-        <Outlet />
-      
+         <LeftSidebar/>
+
+        <div>
+            <Outlet/>
+        </div>
     </div>
   )
 }

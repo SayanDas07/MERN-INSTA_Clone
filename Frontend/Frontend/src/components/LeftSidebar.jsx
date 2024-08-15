@@ -56,12 +56,12 @@ function LeftSidebar() {
                 }
             )
 
-            if(res.data.success) {
+            if (res.data.success) {
                 navigate('/login')
                 toast.success(res.data.message)
-                
+
             }
-            
+
         } catch (error) {
             console.log(error)
             toast.error(error.response.data.message)
@@ -70,20 +70,20 @@ function LeftSidebar() {
     }
 
     const sidebarHandeler = (text) => {
-        if(text === 'Logout') {
+        if (text === 'Logout') {
             logoutHandler()
         }
     }
 
 
     return (
-        <div className="className='fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-[16%] h-screen">
+        <div className='fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-[16%] h-screen'>
             <div className='flex flex-col'>
                 <h1 className='my-8 pl-3 font-bold text-xl'>LOGO</h1>
                 <div>
                     {
                         sidebarItems.map((item, index) => (
-                            <div onClick = {()=> sidebarHandeler(item.text)} key={index} className='flex items-center gap-3 relative hover:bg-gray-100 cursor-pointer rounded-lg p-3 my-3' >
+                            <div onClick={() => sidebarHandeler(item.text)} key={index} className='flex items-center gap-3 relative hover:bg-gray-100 cursor-pointer rounded-lg p-3 my-3' >
                                 {item.icon}
                                 <span>{item.text}</span>
                             </div>
@@ -92,7 +92,16 @@ function LeftSidebar() {
                 </div>
             </div>
         </div>
+        
+        
     )
 }
 
 export default LeftSidebar
+
+
+
+
+
+
+

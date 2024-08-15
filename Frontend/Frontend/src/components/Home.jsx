@@ -5,13 +5,20 @@ import Feed from './Feed'
 
 function Home() {
   return (
+    
     <div className='flex'>
-        <div className='flex-grow'>
+      
+            <div className='flex-grow'>
+            
             <Feed />
             <Outlet />
+                
+                
+                
+            </div>
+            <RightSidebar />
+            
         </div>
-        <RightSidebar />
-    </div>
 )
 }
 
