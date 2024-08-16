@@ -4,50 +4,19 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import store from '@/redux/store.js'
+import { setAuthUser } from '@/redux/authSlice'
 
-const sidebarItems = [
-    {
-        icon: <Home />,
-        text: 'Home',
-    },
-    {
-        icon: <Search />,
-        text: 'Search',
-    },
-    {
-        icon: <TrendingUp />,
-        text: "Explore"
-    },
-    {
-        icon: <MessageCircle />,
-        text: "Messages"
-    },
-    {
-        icon: <Heart />,
-        text: "Notifications"
-    },
-    {
-        icon: <PlusSquare />,
-        text: "Create"
-    },
-    {
-        icon: (
-            <Avatar className='w-6 h-6'>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-        ),
-        text: "Profile"
-    },
-    {
-        icon: <LogOut />,
-        text: "Logout"
-    },
-]
+
 
 function LeftSidebar() {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { user } = useSelector(store => store.auth)
+    // console.log("user", user)
 
+    // console.log("profile", user.profilePicture)
     const logoutHandler = async () => {
         try {
             const res = await axios.get('http://localhost:8000/api/v1/user/logout',
@@ -58,6 +27,7 @@ function LeftSidebar() {
 
             if (res.data.success) {
                 navigate('/login')
+                dispatch(setAuthUser(null))
                 toast.success(res.data.message)
 
             }
@@ -74,6 +44,46 @@ function LeftSidebar() {
             logoutHandler()
         }
     }
+
+    const sidebarItems = [
+        {
+            icon: <Home />,
+            text: 'Home',
+        },
+        {
+            icon: <Search />,
+            text: 'Search',
+        },
+        {
+            icon: <TrendingUp />,
+            text: "Explore"
+        },
+        {
+            icon: <MessageCircle />,
+            text: "Messages"
+        },
+        {
+            icon: <Heart />,
+            text: "Notifications"
+        },
+        {
+            icon: <PlusSquare />,
+            text: "Create"
+        },
+        {
+            icon: (
+                <Avatar className='w-6 h-6'>
+                    <AvatarImage src={user?.profilePicture} />
+                    <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+            ),
+            text: "Profile"
+        },
+        {
+            icon: <LogOut />,
+            text: "Logout"
+        },
+    ]
 
 
     return (
@@ -92,8 +102,8 @@ function LeftSidebar() {
                 </div>
             </div>
         </div>
-        
-        
+
+
     )
 }
 

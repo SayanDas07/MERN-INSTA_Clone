@@ -9,6 +9,7 @@ import CommnetDialoge from './CommnetDialoge'
 function Post() {
 
   const [text, setText] = useState('')
+  const [open, setOpen] = useState(false)
 
   const changeHandler = (e) => {
     let input = e.target.value
@@ -33,7 +34,7 @@ function Post() {
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <MoreHorizontal classname="cursor-pointer" />
+            <MoreHorizontal className="cursor-pointer" />
           </DialogTrigger>
           <DialogContent className="flex flex-col items-center text-sm text-center">
             <Button variant='ghost' className="cursor-pointer w-fit">Add to favorites</Button>
@@ -50,7 +51,7 @@ function Post() {
       <div className='flex items-center justify-between my-2'>
         <div className='flex item-center gap-2'>
           <FaRegHeart size={'22px'} className='cursor-pointer hover:text-gray-600' />
-          <MessageCircle className='cursor-pointer hover:text-gray-600' />
+          <MessageCircle onClick = {() => setOpen(true)} className='cursor-pointer hover:text-gray-600' />
           <Send className='cursor-pointer hover:text-gray-600' />
         </div>
         <Bookmark className='cursor-pointer hover:text-gray-600' />
@@ -64,8 +65,8 @@ function Post() {
         caption
       </p>
 
-      <span>view all commnets</span>
-      <CommnetDialoge />
+      <span onClick = {() => setOpen(true)} className='text-sm text-gray-600 cursor-pointer'>view all commnets</span>
+      <CommnetDialoge open = {open} setOpen = {setOpen}/>
       <div className='flex items-center justify-between'>
         <input
           type="text"

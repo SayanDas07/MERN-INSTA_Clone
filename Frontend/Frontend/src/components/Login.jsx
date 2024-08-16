@@ -6,6 +6,8 @@ import { Button } from './ui/button'
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useDispatch } from 'react-redux'
+import { setAuthUser } from '@/redux/authSlice.js'
 
 
 function Login() {
@@ -15,6 +17,7 @@ function Login() {
     password: ""
   })
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const [loading, setLoading] = useState(false)
 
@@ -37,9 +40,14 @@ function Login() {
         },
         withCredentials: true
       })
+      console.log('API Response:', res.data);
 
       if (res.data.success) {
+        console.log('Dispatching user to Redux store:', res.data.data.user)
+        dispatch(setAuthUser(res.data.data.user))
         navigate('/')
+        
+
         toast.success(res.data.message)
         setInput({
           
