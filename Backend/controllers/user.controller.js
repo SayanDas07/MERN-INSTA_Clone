@@ -81,7 +81,7 @@ const loginUser = asyncHandler(async (req, res) => {
         })
     }
     //2. check if user already exists.3
-    const user = await User.findOne({email})
+    let user = await User.findOne({email})
     if(!user){
         return res.status(401).json({
             message: "User not found",
@@ -101,16 +101,26 @@ const loginUser = asyncHandler(async (req, res) => {
 
 
     const populatedPosts = await Promise.all(
-        user.posts.map(async (postId) => {
-            const post = await Post.findById(postId)
-            if(post.author.equals(user._id)) return post
-        
+    user.posts.map(async (postId) => {
+        const post = await Post.findById(postId)
+        if (post && post.author && post.author.equals(user._id)) return post
         else return null
-        }
-    ))
-    const loggedInUser = await User.findById(user._id).select("-password")
+    })
+)
+    // const loggedInUser = await User.findById(user._id).select("-password")
 
-    loggedInUser.posts = populatedPosts.filter((post) => post !== null)
+    // loggedInUser.posts = populatedPosts.filter((post) => post !== null)
+
+    user = {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
+        bio: user.bio,
+        followers: user.followers,
+        following: user.following,
+        posts: populatedPosts
+    }
 
     
     const options = {
@@ -121,7 +131,7 @@ const loginUser = asyncHandler(async (req, res) => {
     return res.status(200).cookie("accessToken",accessToken,options).json(
         new ApiResponse(200,
             {
-                user : loggedInUser,
+                user,
                 accessToken
             },
             "User logged in successfully"
