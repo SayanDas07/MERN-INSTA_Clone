@@ -5,46 +5,61 @@ import cloudinary from '../utils/cloudinary.js'
 import { ApiError } from '../utils/ApiError.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
 import { User } from '../models/user.model.js'
+import { Comment } from "../models/comment.model.js";
 
 const addNewPost = asyncHandler(async (req, res) => {
-    const {caption} = req.body
-    const {image} = req.files
-    const authorId = req.id
+    try {
+        const {caption} = req.body
+        const image = req.file
+        const authorId = req.id
 
-    if (!caption || !image) {
-        throw new ApiError(400,'Please provide caption and image')
+        // console.log('Caption:', caption)
+        // console.log('Image:', image)
+        // console.log('Author ID:', authorId)
+    
+        if (!image) {
+            return res.status(400).json({ message: 'Image is required' })
+        }
+    
+        //image upload logic
+        //here we use sharp to resize the image
+        const bufferImage = await sharp(image.buffer).resize({width: 500, height: 500 , fit: "inside"}).toFormat('jpeg', {quality: 80}).toBuffer()
+    
+        //convert buffer to base64(uri)
+        const fileuri = `data:image/jpeg;base64,${bufferImage.toString('base64')}`
+    
+        //console.log('File URI:', fileuri)
+    
+        const response = await cloudinary.uploader.upload(fileuri)
+    
+        // console.log('Cloudinary Response:', response);
+    
+        const post = await Post.create({
+            caption,
+            image: response.secure_url,
+            author: authorId
+        })
+    
+        const user = await User.findById(authorId)
+        if(user){
+            user.posts.push(post._id)
+            await user.save()
+        }
+    
+        //we use populate to get the author details in the post object
+        await Post.populate(post, {path: 'author', select: '-password'})
+    
+        return res.status(201).json(new ApiResponse(201, post, 'Post created successfully'))
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ message: 'Internal Server Error' })
+        
     }
-
-    //image upload logic
-    //here we use sharp to resize the image
-    const bufferImage = await sharp(image.buffer).resize({width: 500, height: 500 , fit: "inside"}).toFormat('jpeg', {quality: 80}).toBuffer()
-
-    //convert buffer to base64(uri)
-    const fileuri = `data: image/jpeg;base64,${bufferImage.toString('base64')}`
-
-    const respose = await cloudinary.uploader.upload(fileuri)
-
-    const post = await Post.create({
-        caption,
-        image: respose.secure_url,
-        author: authorId
-    })
-
-    const user = await user.findById(authorId)
-    if(user){
-        user.posts.push(post._id)
-        await user.save()
-    }
-
-    //we use populate to get the author details in the post object
-    await Post.populate(post, {path: 'author', select: '-password'})
-
-    res.status(201).json(new ApiResponse(201, post, 'Post created successfully'))
 
 })
 
 const getAllposts = asyncHandler(async (req, res) => {
-    const posts = await Post.find().sort({createdAt: -1}).populate({path: 'author', select: 'username profilePicture'}).popolate({
+    const posts = await Post.find().sort({createdAt: -1}).populate({path: 'author', select: 'username profilePicture'}).populate({
         path: 'comments',
         createdAt: -1,
         populate: {
@@ -53,7 +68,7 @@ const getAllposts = asyncHandler(async (req, res) => {
         }
     })
 
-    res.status(200).json(new ApiResponse(200, posts, 'All posts are fetched successfully'))
+    return res.status(200).json(new ApiResponse(200, posts, 'All posts are fetched successfully'))
 
 
 })
@@ -64,7 +79,7 @@ const likePost = asyncHandler(async (req, res) => {
 
     const post = await Post.findById(postId)
     if(!post){
-        throw new ApiError(404, 'Post not found')
+        return res.status(404).json({ message: 'Post not found', success: false })
     }
 
     //like logic
@@ -79,7 +94,7 @@ const likePost = asyncHandler(async (req, res) => {
 
     //TODO : socket.io logic for real time like update
 
-    res.status(200).json(new ApiResponse(200, {}, 'Post liked successfully'))
+    return res.status(200).json(new ApiResponse(200, {}, 'Post liked successfully'))
 
 })
 
@@ -89,7 +104,7 @@ const dislikePost = asyncHandler(async (req, res) => {
 
     const post = await Post.findById(postId)
     if(!post){
-        throw new ApiError(404, 'Post not found')
+        return res.status(404).json({ message: 'Post not found', success: false })
     }
 
     //dislike logic
@@ -104,7 +119,7 @@ const dislikePost = asyncHandler(async (req, res) => {
 
     //TODO : socket.io logic for real time dislike update
 
-    res.status(200).json(new ApiResponse(200, {}, 'Post disliked successfully'))
+    return res.status(200).json(new ApiResponse(200, {}, 'Post disliked successfully'))
 })
 
 const addComment = asyncHandler(async (req, res) => {
@@ -115,11 +130,11 @@ const addComment = asyncHandler(async (req, res) => {
     const post = await Post.findById(postId)
     if(!post){
         
-        throw new ApiError(400 ,'Post not found')
+        return res.status(404).json({ message: 'Post not found', success: false })
     }
     if(!text){
 
-        throw new ApiError(400 ,'Please provide comment text')
+        return res.status(400).json({ message: 'Comment text is required', success: false })
     }
 
     const comment = await Comment.create({
@@ -137,7 +152,7 @@ const addComment = asyncHandler(async (req, res) => {
 
     //TODO : socket.io logic for real time comment update
 
-    res.status(201).json(new ApiResponse(201, comment, 'Comment added successfully'))
+    return res.status(201).json(new ApiResponse(201, comment, 'Comment added successfully'))
 
 
 })
@@ -152,15 +167,15 @@ const getAllCommnets = asyncHandler(async (req, res) => {
 
     if(!post){
 
-        throw new ApiError(404,'Post not found')
+        return res.status(404).json({ message: 'Post not found', success: false })
     }
 
     if(comments.length === 0){
       
-        throw new ApiError(404,'No comments found')
+        return res.status(200).json({ message: 'No comments found', success: true })
     }
 
-    res.status(200).json(new ApiResponse(200, comments, 'All comments are fetched successfully'))
+    return res.status(200).json(new ApiResponse(200, comments, 'All comments are fetched successfully'))
 
     
 })
@@ -172,12 +187,12 @@ const deletePost = asyncHandler(async (req, res) => {
     const post = await Post.findById(postId)
 
     if(!post){
-        throw new ApiError(404, 'Post not found')
+        return res.status(404).json({ message: 'Post not found', success: false })
     }
 
     //check if the user is the author of the post
     if(post.author.toString() !== userId){
-        throw new ApiError(403, 'You are not authorized to delete this post')
+        return res.status(401).json({ message: 'You are not authorized to delete this post', success: false })
     }
 
     //delete the post
@@ -201,7 +216,7 @@ const deletePost = asyncHandler(async (req, res) => {
         post: postId
     })
 
-    res.status(200).json(new ApiResponse(200, {}, 'Post deleted successfully'))
+    return res.status(200).json(new ApiResponse(200, {}, 'Post deleted successfully'))
 
 
 })
@@ -212,7 +227,7 @@ const bookmarkPost = asyncHandler(async (req, res) => {
 
     const post = await Post.findById(postId)
     if(!post){
-        throw new ApiError(404, 'Post not found')
+        return res.status(404).json({ message: 'Post not found', success: false })
     }
     //add to bookmark
     const user = await User.findById(userId)
@@ -227,7 +242,7 @@ const bookmarkPost = asyncHandler(async (req, res) => {
             new: true
         })
 
-        res.status(200).json(new ApiResponse(200, {}, 'Post removed from bookmarks successfully'))
+        return res.status(200).json(new ApiResponse(200, {}, 'Post removed from bookmarks successfully'))
     }else{
         //add to bookmarks
         await user.updateOne({
@@ -239,7 +254,7 @@ const bookmarkPost = asyncHandler(async (req, res) => {
             new: true
         })
 
-        res.status(200).json(new ApiResponse(200, {}, 'Post bookmarked successfully'))
+        return res.status(200).json(new ApiResponse(200, {}, 'Post bookmarked successfully'))
     }
 
     
@@ -259,7 +274,7 @@ const getUserposts = asyncHandler(async (req, res) => {
             }
         })
     
-    res.status(200).json(new ApiResponse(200, posts, 'All posts fetched successfully'))
+        return res.status(200).json(new ApiResponse(200, posts, 'All posts fetched successfully'))
 
 })
 export {addNewPost,
