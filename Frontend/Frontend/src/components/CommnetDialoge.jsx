@@ -14,11 +14,12 @@ import { toast } from 'sonner'
 function CommnetDialoge({ open, setOpen }) {
   const dispatch = useDispatch()
   const [text, setText] = useState('')
-  const { selectedPost, posts } = useSelector(state => state.post)
+  const { selectedPost, posts } = useSelector(store => store.post)
   const [comments, setComments] = useState([])
   
 
 
+  
   useEffect(() => {
     if (selectedPost) {
       setComments(selectedPost?.comments)
@@ -51,7 +52,7 @@ function CommnetDialoge({ open, setOpen }) {
         const updatedPostComment = [...comments, res.data.data]
         setComments(updatedPostComment)
 
-        const updatedPostData = posts.map(p => p._id === selectedPost._id ? { ...p, comments: updatedPostComment } : p)
+        const updatedPostData = posts.map(p => p._id === selectedPost?._id ? { ...p, comments: updatedPostComment } : p)
 
         dispatch(setPosts(updatedPostData))
         setText('')
@@ -81,13 +82,13 @@ function CommnetDialoge({ open, setOpen }) {
               <div className='flex gap-3 items-center'>
                 <Link>
                   <Avatar>
-                    <AvatarImage src={selectedPost.author?.profilePicture} />
+                    <AvatarImage src={selectedPost?.author?.profilePicture} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </Link>
                 <div>
-                  <Link className='font-semibold text-xs'>{selectedPost.author?.username}</Link>
-                  <span className='text-gray-600 text-sm'>{selectedPost.author?.bio}</span>
+                  <Link className='font-semibold text-xs'>{selectedPost?.author?.username}</Link>
+                  <span className='text-gray-600 text-sm'>{selectedPost?.author?.bio}</span>
                 </div>
               </div>
 

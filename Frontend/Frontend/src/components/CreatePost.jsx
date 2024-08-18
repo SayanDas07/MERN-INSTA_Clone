@@ -19,8 +19,8 @@ function CreatePost({ open, setOpen }) {
   const [imgpreview, setImgpreview] = React.useState("")
   const [loading, setLoading] = React.useState(false)
 
-  const { user } = useSelector(state => state.auth)
-  const { posts } = useSelector(state => state.post)
+  const { user } = useSelector(store => store.auth)
+  const { posts } = useSelector(store => store.post)
   const createPostHandeler = async (e) => {
     const formData = new FormData()
     formData.append('caption', caption)
@@ -86,12 +86,12 @@ function CreatePost({ open, setOpen }) {
 
           <div className='flex gap-3 items-center'>
             <Avatar>
-              <AvatarImage src={user.profilePicture} alt="img" />
+              <AvatarImage src={user?.profilePicture} alt="img" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className='font-bold text-sm'>{user.username}</h1>
-              <span className='text-gray-600 text-xs'>Bio here...</span>
+              <h1 className='font-bold text-sm'>{user?.username}</h1>
+              <span className='text-gray-600 text-xs'>{user?.bio}</span>
             </div>
           </div>
 

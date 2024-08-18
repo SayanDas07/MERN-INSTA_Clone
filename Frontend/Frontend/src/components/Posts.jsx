@@ -3,7 +3,7 @@ import Post from './Post'
 import { useSelector } from 'react-redux';
 
 function Posts() {
-  const { posts } = useSelector(state => state.post);
+  const { posts } = useSelector(store => store.post);
   return (
     <div>
         {

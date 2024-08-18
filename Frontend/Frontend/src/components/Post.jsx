@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
-import { Badge, Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react'
+import { Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react'
 import { Button } from './ui/button'
+import { Badge } from './ui/badge'
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommnetDialoge from './CommnetDialoge'
 import { useDispatch, useSelector } from 'react-redux'
@@ -10,24 +11,25 @@ import { toast } from 'sonner'
 import axios from 'axios'
 import { setPosts, setSelectedPost } from '@/redux/postSlice'
 
+
 function Post({ post }) {
 
   const [text, setText] = useState('')
   const [open, setOpen] = useState(false)
-  const { user } = useSelector(state => state.auth)
-  const { posts } = useSelector(state => state.post)
+  const { user } = useSelector(store => store.auth)
+  const { posts } = useSelector(store => store.post)
   const dispatch = useDispatch()
   const [liked, setLiked] = useState(false || post.likes?.includes(user?._id))
   const [postlikes, setPostlikes] = useState(post.likes?.length)
   const [comments, setComments] = useState(post.comments)
   const [commentLength, setCommentLength] = useState('')
 
-  useEffect(()=> {
+  useEffect(() => {
     if (comments) {
       setCommentLength(comments.length)
     }
 
-  },[comments])
+  }, [comments])
 
   const changeHandler = (e) => {
     let input = e.target.value
@@ -123,7 +125,9 @@ function Post({ post }) {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div className='flex items-center gap-3'>
+
             <h1>{post.author?.username}</h1>
+            {user?._id === post?.author?._id && <Badge variant='secondary'>Author</Badge>}
 
           </div>
         </div>
