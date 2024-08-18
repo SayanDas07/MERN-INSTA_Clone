@@ -1,8 +1,9 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authSlice from "./authSlice.js";
+import postSlice from './postSlice.js';
 
-import {
-  
+
+import { 
     persistReducer,
     FLUSH,
     REHYDRATE,
@@ -11,8 +12,8 @@ import {
     PURGE,
     REGISTER,
 } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
 
+import storage from 'redux-persist/lib/storage'
 
 
 const persistConfig = {
@@ -22,7 +23,9 @@ const persistConfig = {
 }
 
 const rootReducer = combineReducers({
-    auth: authSlice
+    auth:authSlice,
+    post:postSlice,
+    
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -35,6 +38,5 @@ const store = configureStore({
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
         }),
-})
-
-export default store
+});
+export default store;
