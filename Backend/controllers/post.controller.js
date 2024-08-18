@@ -7,6 +7,7 @@ import { ApiResponse } from '../utils/ApiResponse.js'
 import { User } from '../models/user.model.js'
 import { Comment } from "../models/comment.model.js";
 
+
 const addNewPost = asyncHandler(async (req, res) => {
     try {
         const {caption} = req.body
@@ -59,16 +60,21 @@ const addNewPost = asyncHandler(async (req, res) => {
 })
 
 const getAllposts = asyncHandler(async (req, res) => {
-    const posts = await Post.find().sort({createdAt: -1}).populate({path: 'author', select: 'username profilePicture'}).populate({
+    const posts = await Post.find().sort({ createdAt: -1 })
+    .populate({ path: 'author', select: 'username profilePicture' })
+    .populate({
         path: 'comments',
-        createdAt: -1,
+        sort: { createdAt: -1 },
         populate: {
             path: 'author',
             select: 'username profilePicture'
         }
     })
 
-    return res.status(200).json(new ApiResponse(200, posts, 'All posts are fetched successfully'))
+    return res.status(200).json({
+        posts,
+        success: true
+    })
 
 
 })
@@ -180,46 +186,42 @@ const getAllCommnets = asyncHandler(async (req, res) => {
     
 })
 
+
+import mongoose from 'mongoose';
+
 const deletePost = asyncHandler(async (req, res) => {
-    const postId = req.params.id
-    const userId = req.id
+    const postId = req.params.id;
+    const authorId = req.id;  
 
-    const post = await Post.findById(postId)
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: 'Post not found', success: false });
 
-    if(!post){
-        return res.status(404).json({ message: 'Post not found', success: false })
+    
+    // console.log("Post Author:", post.author);
+    // console.log("Author ID from JWT:", authorId);
+
+    
+
+    if (post.author.toString() !== authorId.toString()) {
+        return res.status(403).json({ message: 'Unauthorized to delete', success: false });
     }
 
-    //check if the user is the author of the post
-    if(post.author.toString() !== userId){
-        return res.status(401).json({ message: 'You are not authorized to delete this post', success: false })
-    }
+    // Delete post
+    await Post.findByIdAndDelete(postId);
 
-    //delete the post
-    await Post.findByIdAndDelete(postId)
+    // Remove the post id from the user's post
+    let user = await User.findById(authorId);
+    user.posts = user.posts.filter(id => id.toString() !== postId);
+    await user.save();
 
-    //delete the post from the user's post array
-    await User.findByIdAndUpdate({
-        _id: userId
-    },
-    {
-        $pull: {
-            posts: postId
-        }
-    },
-    {
-        new: true
-    })
+    // Delete associated comments
+    await Comment.deleteMany({ post: postId });
 
-    //delete the post's comments
-    await Comment.deleteMany({
-        post: postId
-    })
-
-    return res.status(200).json(new ApiResponse(200, {}, 'Post deleted successfully'))
+    return res.status(200).json(new ApiResponse(200, {}, 'Post deleted successfully'));
+});
 
 
-})
+
 
 const bookmarkPost = asyncHandler(async (req, res) => {
     const postId = req.params.id
