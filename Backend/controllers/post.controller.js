@@ -147,7 +147,9 @@ const addComment = asyncHandler(async (req, res) => {
         text,
         post: postId,
         author: userId
-    }).popolate({
+    })
+
+    await comment.populate({
         path: 'author',
         select: 'username profilePicture'
     })
@@ -186,8 +188,6 @@ const getAllCommnets = asyncHandler(async (req, res) => {
     
 })
 
-
-import mongoose from 'mongoose';
 
 const deletePost = asyncHandler(async (req, res) => {
     const postId = req.params.id;

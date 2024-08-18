@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
 import { Badge, Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react'
@@ -8,7 +8,7 @@ import CommnetDialoge from './CommnetDialoge'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 import axios from 'axios'
-import { setPosts } from '@/redux/postSlice'
+import { setPosts, setSelectedPost } from '@/redux/postSlice'
 
 function Post({ post }) {
 
@@ -19,6 +19,15 @@ function Post({ post }) {
   const dispatch = useDispatch()
   const [liked, setLiked] = useState(false || post.likes?.includes(user?._id))
   const [postlikes, setPostlikes] = useState(post.likes?.length)
+  const [comments, setComments] = useState(post.comments)
+  const [commentLength, setCommentLength] = useState('')
+
+  useEffect(()=> {
+    if (comments) {
+      setCommentLength(comments.length)
+    }
+
+  },[comments])
 
   const changeHandler = (e) => {
     let input = e.target.value
@@ -77,6 +86,34 @@ function Post({ post }) {
 
     }
   }
+
+
+  const commentOnPostHandler = async () => {
+    try {
+      const res = await axios.post(`http://localhost:8000/api/v1/post/${post?._id}/comment`, {
+        text
+      },
+        {
+          withCredentials: true
+        })
+
+      if (res.data.success) {
+        toast.success(res.data.message)
+        const updatedPostComment = [...comments, res.data.data]
+        setComments(updatedPostComment)
+
+        const updatedPostData = posts.map(p => p._id === post._id ? { ...p, comments: updatedPostComment } : p)
+
+        dispatch(setPosts(updatedPostData))
+        setText('')
+      }
+
+    } catch (error) {
+      console.log(error)
+
+    }
+  }
+
   return (
     <div className='my-8 w-full max-w-sm mx-auto'>
       <div className='flex items-center justify-between'>
@@ -115,8 +152,11 @@ function Post({ post }) {
           {
             liked ? <FaHeart onClick={() => likeOrDislikePostHandler(post._id)} size={'24'} className='cursor-pointer text-red-700' /> : <FaRegHeart onClick={() => likeOrDislikePostHandler(post._id)} size={'22px'} className='cursor-pointer hover:text-gray-600' />
           }
-          
-          <MessageCircle onClick={() => setOpen(true)} className='cursor-pointer hover:text-gray-600' />
+
+          <MessageCircle onClick={() => {
+            dispatch(setSelectedPost(post))
+            setOpen(true)
+          }} className='cursor-pointer hover:text-gray-600' />
           <Send className='cursor-pointer hover:text-gray-600' />
         </div>
         <Bookmark className='cursor-pointer hover:text-gray-600' />
@@ -129,8 +169,13 @@ function Post({ post }) {
         </span>
         {post.caption}
       </p>
+      {
+        comments.length > 0 && <span onClick={() => {
+          dispatch(setSelectedPost(post))
+          setOpen(true)
+        }} className='text-sm text-gray-600 cursor-pointer'>view {commentLength} commnets</span>
+      }
 
-      <span onClick={() => setOpen(true)} className='text-sm text-gray-600 cursor-pointer'>view all commnets</span>
       <CommnetDialoge open={open} setOpen={setOpen} />
       <div className='flex items-center justify-between'>
         <input
@@ -141,7 +186,7 @@ function Post({ post }) {
           className='outline-none text-sm w-full'
         />
         {
-          text && <span className='text-[#3BADF8] cursor-pointer'>post</span>
+          text && <span onClick={commentOnPostHandler} className='text-[#3BADF8] cursor-pointer'>post</span>
         }
       </div>
 

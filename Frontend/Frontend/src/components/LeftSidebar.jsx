@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import store from '@/redux/store.js'
 import { setAuthUser } from '@/redux/authSlice'
 import CreatePost from './CreatePost'
+import { setPosts, setSelectedPost } from '@/redux/postSlice'
 
 
 
@@ -30,6 +31,8 @@ function LeftSidebar() {
             if (res.data.success) {
                 navigate('/login')
                 dispatch(setAuthUser(null))
+                dispatch(setPosts([]))
+                dispatch(setSelectedPost(null))
                 toast.success(res.data.message)
 
             }
