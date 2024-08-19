@@ -53,6 +53,9 @@ function LeftSidebar() {
             setOpen(true)
 
         }
+        else if (text == "Profile") {
+            navigate(`/profile/${user?._id}`)
+        }
     }
 
     const sidebarItems = [

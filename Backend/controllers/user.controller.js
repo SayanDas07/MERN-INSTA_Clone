@@ -163,7 +163,16 @@ const getUser = asyncHandler(async (req, res) => {
 
     const user = await User.findById(userId).select("-password")
 
-    if(!user){
+    await user.populate({
+        path: "posts",
+        sort: { createdAt: -1 },
+    })
+
+    const finaluser = await user.populate(
+        "bookmarks"
+    )
+
+    if(!finaluser){
         return res.status(401).json({
             message: "User not found",
             success: false,
@@ -171,7 +180,7 @@ const getUser = asyncHandler(async (req, res) => {
     }
 
     return res.status(200).json(
-        new ApiResponse(200, user, "User found")
+        new ApiResponse(200, finaluser, "User found")
     )
 })
 
