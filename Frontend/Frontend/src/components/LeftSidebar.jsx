@@ -59,6 +59,9 @@ function LeftSidebar() {
         else if(text == "Home"){
             navigate('/')
         }
+        else if(text == "Messages"){
+            navigate('/chat')
+        }
     }
 
     const sidebarItems = [

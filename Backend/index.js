@@ -4,10 +4,11 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './db/db.js';
+import { app, server } from './socketIo/socket.js';
 
 dotenv.config({})
 
-const app = express()
+
 
 //routes
 app.get('/', (req, res) => {
@@ -39,7 +40,7 @@ const PORT = process.env.PORT || 8000
 
 connectDB()
 .then(() => {
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`Server is running at port : ${process.env.PORT}`);
     })
 })

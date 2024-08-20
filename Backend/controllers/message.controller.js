@@ -3,13 +3,15 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { Conversation } from "../models/conversation.model.js"
 import { Message } from "../models/message.model.js"
+import { getReciverSocketId, io } from "../socketIo/socket.js"
 
 const sendMessage = asyncHandler(async (req, res) => {
     const senderId = req.id
     const receiverId = req.params.id
-    const { message } = req.body
+    const { textMessage : message } = req.body
+    console.log("messages",message)
 
-    const conversation = await Conversation.findOne({
+    let conversation = await Conversation.findOne({
         participants: {
             $all: [senderId, receiverId]
         }
@@ -36,11 +38,14 @@ const sendMessage = asyncHandler(async (req, res) => {
     if(newMessage){
         conversation.message.push(newMessage._id)
     }
-    await conversation.save()
-
-    await newMessage.save()
+    await Promise.all([conversation.save(),newMessage.save()])
 
     //impliment socket.io here
+    const reciverSocketId = getReciverSocketId(receiverId)
+
+    if(reciverSocketId){
+        io.to(reciverSocketId).emit('newMessage', newMessage)
+    }
 
 
     return res.status(200).json(new ApiResponse(200, newMessage, "Message sent successfully"))
@@ -57,11 +62,13 @@ const getMessages = asyncHandler(async (req, res) => {
         }
     }).populate('message')
 
+    //console.log("conversation",conversation)
+
     if(!conversation){
-        return res.status(200).json(new ApiResponse(200, [], "No messages found"))
+        return res.status(200).json({success:true, messages:[]})
     }
 
-    return res.status(200).json(new ApiResponse(200, conversation?.message, "Messages found"))
+    return res.status(200).json({success:true, messages:conversation?.message})
 })
 
 

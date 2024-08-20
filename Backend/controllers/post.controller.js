@@ -99,6 +99,22 @@ const likePost = asyncHandler(async (req, res) => {
     })
 
     //TODO : socket.io logic for real time like update
+    const user = await User.findById(userId).select('username profilePicture')
+
+    const postOwnerId = post.author.toString()
+    if(postOwnerId !== userId){
+        //send notification to the post owner
+        const notification = {
+            type: 'like',
+            userId: userId,
+            userDetails: user,
+            postId: postId,
+            message: `${user.username} liked your post`
+        }
+
+        const postOwnerSocketId = getReciverSocketId(postOwnerId)
+        io.to(postOwnerSocketId).emit('notification', notification)
+    }
 
     return res.status(200).json(new ApiResponse(200, {}, 'Post liked successfully'))
 
@@ -124,6 +140,22 @@ const dislikePost = asyncHandler(async (req, res) => {
     })
 
     //TODO : socket.io logic for real time dislike update
+    const user = await User.findById(userId).select('username profilePicture')
+
+    const postOwnerId = post.author.toString()
+    if(postOwnerId !== userId){
+        //send notification to the post owner
+        const notification = {
+            type: 'dislike',
+            userId: userId,
+            userDetails: user,
+            postId: postId,
+            message: `${user.username} liked your post`
+        }
+
+        const postOwnerSocketId = getReciverSocketId(postOwnerId)
+        io.to(postOwnerSocketId).emit('notification', notification)
+    }
 
     return res.status(200).json(new ApiResponse(200, {}, 'Post disliked successfully'))
 })
