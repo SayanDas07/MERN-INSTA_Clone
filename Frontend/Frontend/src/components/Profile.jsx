@@ -1,7 +1,7 @@
 import userGetUserProfile from '@/hooks/UseGetUserProfile';
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -12,10 +12,10 @@ function Profile() {
   const userId = params.id;
   userGetUserProfile(userId);
 
-  const { userProfile } = useSelector(store => store.auth);
+  const { userProfile, user } = useSelector(store => store.auth);
   //console.log(userProfile);
 
-  const isLoggedInUser = true
+  const isLoggedInUser = user?._id === userProfile?._id;
   const isFollowing = true
   const [activeTab, setActiveTab] = React.useState('posts')
 
@@ -42,8 +42,11 @@ function Profile() {
                   {userProfile?.username}
                 </span>
                 {
-                  isLoggedInUser ? (<>
-                    <Button variant='secondary' className='hover:bg-gray-200 h-8'>Edit profile</Button>
+                  isLoggedInUser ? (
+                  <>
+                    <Link to = '/profile/edit'>
+                      <Button variant='secondary' className='hover:bg-gray-200 h-8'>Edit profile</Button>
+                    </Link>
                     <Button variant='secondary' className='hover:bg-gray-200 h-8'>View archive</Button>
                     <Button variant='secondary' className='hover:bg-gray-200 h-8'>Ad tools</Button>
                   </>) : (
