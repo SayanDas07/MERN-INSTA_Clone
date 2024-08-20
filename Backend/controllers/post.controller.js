@@ -6,7 +6,7 @@ import { ApiError } from '../utils/ApiError.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
 import { User } from '../models/user.model.js'
 import { Comment } from "../models/comment.model.js";
-
+import { getReciverSocketId, io } from "../socketIo/socket.js"
 
 const addNewPost = asyncHandler(async (req, res) => {
     try {
