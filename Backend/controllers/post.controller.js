@@ -265,7 +265,7 @@ const bookmarkPost = asyncHandler(async (req, res) => {
     }
     //add to bookmark
     const user = await User.findById(userId)
-    if(user.bookmarks.includes(userId)){
+    if(user.bookmarks.includes(post?._id)){
         //remove from bookmarks
         await user.updateOne({
             $pull: {
@@ -275,6 +275,8 @@ const bookmarkPost = asyncHandler(async (req, res) => {
         {
             new: true
         })
+
+        
 
         return res.status(200).json(new ApiResponse(200, {}, 'Post removed from bookmarks successfully'))
     }else{

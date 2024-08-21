@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
 import { Bookmark, MessageCircle, MoreHorizontal, Send } from 'lucide-react'
@@ -23,6 +23,7 @@ function Post({ post }) {
   const [postlikes, setPostlikes] = useState(post.likes?.length)
   const [comments, setComments] = useState(post.comments)
   const [commentLength, setCommentLength] = useState('')
+  
 
   useEffect(() => {
     if (comments) {
@@ -116,6 +117,27 @@ function Post({ post }) {
     }
   }
 
+  const bookmarkHandeler = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8000/api/v1/post/${post._id}/bookmark`, {
+        withCredentials: true
+      })
+
+      if (res.data.success) {
+        toast.success(res.data.message)
+        setBookmark(!bookmark)
+
+      }
+
+    } catch (error) {
+      console.log(error)
+
+    }
+  }
+
+  
+  
+
   return (
     <div className='my-8 w-full max-w-sm mx-auto'>
       <div className='flex items-center justify-between'>
@@ -163,7 +185,7 @@ function Post({ post }) {
           }} className='cursor-pointer hover:text-gray-600' />
           <Send className='cursor-pointer hover:text-gray-600' />
         </div>
-        <Bookmark className='cursor-pointer hover:text-gray-600' />
+        <Bookmark onClick={bookmarkHandeler} className={`cursor-pointer hover:text-gray-600`} />
 
       </div>
       <span className='font-medium block mb-2 text-sm'>{postlikes} likes</span>
