@@ -6,6 +6,7 @@ import { Button } from './ui/button'
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useSelector } from 'react-redux'
 
 
 function Signup() {
@@ -15,6 +16,7 @@ function Signup() {
     password: ""
   })
   const navigate = useNavigate()
+  const { user } = useSelector(store => store.auth)
 
   const [loading, setLoading] = useState(false)
 
@@ -47,13 +49,19 @@ function Signup() {
           password: ""
         })
 
-      } 
+      }
     } catch (error) {
       toast.error(error.response.data.message)
-    }finally{
+    } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [])
   return (
     <div className='flex items-center w-screen h-screen justify-center'>
       <form onSubmit={signupHandeler} className='shadow-lg flex flex-col gap-5 p-8'>
@@ -92,15 +100,15 @@ function Signup() {
           />
         </div>
         {
-                    loading ? (
-                        <Button>
-                            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                            Please wait
-                        </Button>
-                    ) : (
-                        <Button type='submit'>Signup</Button>
-                    )
-                }
+          loading ? (
+            <Button>
+              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+              Please wait
+            </Button>
+          ) : (
+            <Button type='submit'>Signup</Button>
+          )
+        }
 
 
         <span className='text-center'>Already have an account? <Link to="/login" className='text-blue-600'>Login</Link></span>
