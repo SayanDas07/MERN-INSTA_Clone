@@ -46,7 +46,7 @@ function Post({ post }) {
   const deletePostHandler = async () => {
     try {
       //delete
-      const res = await axios.delete(`http://localhost:8000/api/v1/post/delete/${post._id}`, {
+      const res = await axios.delete(`https://mern-insta-clone-1.onrender.com/api/v1/post/delete/${post._id}`, {
         withCredentials: true
       })
 
@@ -66,7 +66,7 @@ function Post({ post }) {
   const likeOrDislikePostHandler = async (postId) => {
     try {
       const action = liked ? 'dislike' : 'like'
-      const res = await axios.get(`http://localhost:8000/api/v1/post/${postId}/${action}`, {
+      const res = await axios.get(`https://mern-insta-clone-1.onrender.com/api/v1/post/${postId}/${action}`, {
         withCredentials: true
       })
 
@@ -93,7 +93,7 @@ function Post({ post }) {
 
   const commentOnPostHandler = async () => {
     try {
-      const res = await axios.post(`http://localhost:8000/api/v1/post/${post?._id}/comment`, {
+      const res = await axios.post(`https://mern-insta-clone-1.onrender.com/api/v1/post/${post?._id}/comment`, {
         text
       },
         {
@@ -119,7 +119,7 @@ function Post({ post }) {
 
   const bookmarkHandeler = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/v1/post/${post._id}/bookmark`, {
+      const res = await axios.get(`https://mern-insta-clone-1.onrender.com/api/v1/post/${post._id}/bookmark`, {
         withCredentials: true
       })
 

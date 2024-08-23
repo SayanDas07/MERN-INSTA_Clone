@@ -9,7 +9,7 @@ const useGetAllMessages = (selectedUserId) => {
     useEffect(() => {
         const fetchMessages  = async () => {
             try {
-                const res = await axios.get(`http://localhost:8000/api/v1/message/get/${selectedUserId}`, { withCredentials: true });
+                const res = await axios.get(`https://mern-insta-clone-1.onrender.com/api/v1/message/get/${selectedUserId}`, { withCredentials: true });
                 if (res.data.success) {  
                     dispatch(setMessages(res.data?.messages));
                 }
