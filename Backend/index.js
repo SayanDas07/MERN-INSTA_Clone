@@ -5,15 +5,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './db/db.js';
 import { app, server } from './socketIo/socket.js';
+import path from 'path';
 
 dotenv.config({})
 
+const __dirname = path.resolve()
 
-
-//routes
-app.get('/', (req, res) => {
-    res.send('Hello World')
-})
 //middlewares
 app.use(express.json())
 app.use(cookieParser()) // to get the cookie from the server
@@ -22,7 +19,7 @@ const corsOptions = {
     origin: 'http://localhost:5173',
     credentials: true,
     optionSuccessStatus: 200
-    }
+}
 app.use(cors(corsOptions))
 
 //routes
@@ -36,14 +33,19 @@ app.use('/api/v1/message', messageRoutes)
 import postRoutes from './routes/post.route.js'
 app.use('/api/v1/post', postRoutes)
 
+app.use(express.static(path.join(__dirname, "Frontend/Frontend/dist")));
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "Frontend","Frontend", "dist", "index.html"));
+})
+
 const PORT = process.env.PORT || 8000
 
 connectDB()
-.then(() => {
-    server.listen(PORT, () => {
-        console.log(`Server is running at port : ${process.env.PORT}`);
+    .then(() => {
+        server.listen(PORT, () => {
+            console.log(`Server is running at port : ${process.env.PORT}`);
+        })
     })
-})
-.catch((err) => {
-    console.log("MONGO db connection failed !!! ", err);
-})
+    .catch((err) => {
+        console.log("MONGO db connection failed !!! ", err);
+    })
