@@ -13,6 +13,6 @@ router.route('/:id/profile').get(verifyJWT, getUser);
 router.route('/profile/edit').post(verifyJWT, upload.single('profilePicture'), editUser);
 
 router.route('/suggested').get(verifyJWT, getSuggestedUser);
-router.route('/followorunfollow/:id').post(verifyJWT, followOrUnfollow);
+router.route('/followorunfollow/:id').get(verifyJWT, followOrUnfollow);
 
 export default router;

@@ -6,6 +6,9 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { AtSign, Heart, MessageCircle } from 'lucide-react';
+import { setUserProfile } from '@/redux/authSlice';
+import useUserProfileFollowUnfollow from '@/hooks/UseUserProfileFollowUnfollow ';
+import axios from 'axios';
 
 function Profile() {
   const params = useParams();
@@ -16,7 +19,9 @@ function Profile() {
   //console.log(userProfile);
 
   const isLoggedInUser = user?._id === userProfile?._id;
-  const isFollowing = true
+  //console.log(isLoggedInUser);
+  const isFollowing = userProfile?.followers.includes(user?._id);
+  //console.log(isFollowing);
   const [activeTab, setActiveTab] = React.useState('posts')
 
   const tabChangeHandeler = (tab) => {
@@ -24,6 +29,21 @@ function Profile() {
   }
 
   const displayedPost = activeTab === 'posts' ? userProfile?.posts : userProfile?.bookmarks
+
+  // useUserProfileFollowUnfollow(userId)
+
+  // const handleFollowUnfollow = async () => {
+  //   try {
+  //     const res = await axios.post(`http://localhost:8000/api/v1/user/followorunfollow/${userId}`, {}, { withCredentials: true });
+
+  //     if (res.data.success) {
+  //       const updatedUser = [...user, res.data.user?.followers]
+  //       dispatch(setUserProfile(updatedUser))
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div className='flex max-w-5xl justify-center mx-auto pl-10'>
@@ -43,22 +63,22 @@ function Profile() {
                 </span>
                 {
                   isLoggedInUser ? (
-                  <>
-                    <Link to = '/profile/edit'>
-                      <Button variant='secondary' className='hover:bg-gray-200 h-8'>Edit profile</Button>
-                    </Link>
-                    <Button variant='secondary' className='hover:bg-gray-200 h-8'>View archive</Button>
-                    <Button variant='secondary' className='hover:bg-gray-200 h-8'>Ad tools</Button>
-                  </>) : (
+                    <>
+                      <Link to='/profile/edit'>
+                        <Button variant='secondary' className='hover:bg-gray-200 h-8'>Edit profile</Button>
+                      </Link>
+                      
+                    </>) : (
                     isFollowing ? (
                       <>
-                        <Button variant="secondary" className='h-8'>Unfollow</Button>
-                        <Button variant="secondary" className='h-8'>Message</Button>
+                        <Button variant="secondary" className='h-8' >Unfollow</Button>
+                        <Link to='/chat' ><Button variant="secondary" className='h-8'>Message</Button></Link>
                       </>
                     ) : (
-                      <Button className='bg-[#0095F6] hover:bg-[#08263b]  h-8'>Follow</Button>
-                    )
+                      <Button className='bg-[#0095F6] hover:bg-[#08263b] h-8' >Follow</Button>
+                      
 
+                    )
                   )
                 }
               </div>
@@ -88,11 +108,9 @@ function Profile() {
             <span className={`py-3 cursor-pointer ${activeTab === 'posts' ? 'font-bold' : ''}`} onClick={() => tabChangeHandeler('posts')}>
               POSTS
             </span>
-            <span className={`py-3 cursor-pointer ${activeTab === 'saved' ? 'font-bold' : ''}`} onClick={() => tabChangeHandeler('saved')}>
+            <span className={`py-9 px-11 cursor-pointer ${activeTab === 'saved' ? 'font-bold' : ''}`} onClick={() => tabChangeHandeler('saved')}>
               SAVED
             </span>
-            <span className='py-3 cursor-pointer'>REELS</span>
-            <span className='py-3 cursor-pointer'>TAGS</span>
 
           </div>
 

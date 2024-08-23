@@ -125,7 +125,7 @@ function Post({ post }) {
 
       if (res.data.success) {
         toast.success(res.data.message)
-        setBookmark(!bookmark)
+        
 
       }
 

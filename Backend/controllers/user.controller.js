@@ -131,8 +131,7 @@ const loginUser = asyncHandler(async (req, res) => {
     return res.status(200).cookie("accessToken",accessToken,options).json(
         new ApiResponse(200,
             {
-                user,
-                accessToken
+                user
             },
             "User logged in successfully"
         )
@@ -239,7 +238,7 @@ const followOrUnfollow = asyncHandler(async (req, res) => {
             })
         }
         const user = await User.findById(followKrneWala)
-        const targetUser = await User.findById(jiskoFollowKrunga)
+        let targetUser = await User.findById(jiskoFollowKrunga)
         if (!targetUser) {
             return res.status(404).json({
                 message: "User not found",
@@ -262,7 +261,12 @@ const followOrUnfollow = asyncHandler(async (req, res) => {
                  User.updateOne({ _id: followKrneWala }, { $pull: { following: jiskoFollowKrunga } }),
                  User.updateOne({ _id: jiskoFollowKrunga }, { $pull: { followers: followKrneWala } }),
              ])
-             return res.status(200).json(new ApiResponse(200, "unfollowed successfully", true))
+             targetUser = await User.findById(jiskoFollowKrunga).select("-password")
+             return res.status(200).json({
+                    message: "unfollowed successfully",
+                    success: true,
+                    user: targetUser,
+             })
          } else {
              // follow 
              await Promise.all([
@@ -275,7 +279,12 @@ const followOrUnfollow = asyncHandler(async (req, res) => {
                     { $push: { followers: followKrneWala } }
                 ),
              ])
-             return res.status(200).json(new ApiResponse(200, "followed successfully", true));
+                targetUser = await User.findById(jiskoFollowKrunga).select("-password")
+             return res.status(200).json({
+                    message: "followed successfully",
+                    success: true,
+                    user: targetUser,
+             });
          } 
 })
 export { registerUser, loginUser, logoutUser, getUser, editUser,getSuggestedUser, followOrUnfollow }

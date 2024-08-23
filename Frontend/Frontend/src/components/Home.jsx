@@ -10,9 +10,9 @@ function Home() {
   useGetAllSuggestedUsers();
   return (
     
-    <div className='flex'>
+    <div className='flex flex-col lg:flex-row'>
       
-            <div className='flex-grow'>
+            <div className='flex-grow lg:w-[70%] px-4 lg:px-8 py-4'>
             
             <Feed />
             <Outlet />
@@ -20,7 +20,9 @@ function Home() {
                 
                 
             </div>
-            <RightSidebar />
+            <div className='hidden lg:block lg:w-[30%]'>
+        <RightSidebar />
+      </div>
             
         </div>
 )
