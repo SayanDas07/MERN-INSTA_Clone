@@ -67,7 +67,7 @@ function Profile() {
                       <Link to='/profile/edit'>
                         <Button variant='secondary' className='hover:bg-gray-200 h-8'>Edit profile</Button>
                       </Link>
-                      
+
                     </>) : (
                     isFollowing ? (
                       <>
@@ -75,8 +75,12 @@ function Profile() {
                         <Link to='/chat' ><Button variant="secondary" className='h-8'>Message</Button></Link>
                       </>
                     ) : (
-                      <Button className='bg-[#0095F6] hover:bg-[#08263b] h-8' >Follow</Button>
-                      
+                      <>
+                        <Button className='bg-[#0095F6] hover:bg-[#08263b] h-8' >Follow</Button>
+                        <Link to='/chat' ><Button variant="secondary" className='h-8'>Message</Button></Link>
+                      </>
+
+
 
                     )
                   )

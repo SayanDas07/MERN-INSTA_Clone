@@ -162,7 +162,6 @@ function Post({ post }) {
               post?.author?._id !== user?._id && <Button variant='ghost' className="cursor-pointer w-fit text-[#ED4956] font-bold">Unfollow</Button>
             }
 
-            <Button variant='ghost' className="cursor-pointer w-fit">Add to favorites</Button>
             {
               user && user?._id === post?.author._id && <Button onClick={deletePostHandler} variant='ghost' className="cursor-pointer w-fit text-red-600">Delete</Button>
             }
@@ -183,7 +182,7 @@ function Post({ post }) {
             dispatch(setSelectedPost(post))
             setOpen(true)
           }} className='cursor-pointer hover:text-gray-600' />
-          <Send className='cursor-pointer hover:text-gray-600' />
+          
         </div>
         <Bookmark onClick={bookmarkHandeler} className={`cursor-pointer hover:text-gray-600`} />
 
