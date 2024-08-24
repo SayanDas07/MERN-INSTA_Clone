@@ -9,4 +9,7 @@
 #### 4. MongoDB
 #### 5. shadcn UI
 
+### [Check out the live demo of the MINI-Insta WEBSITE](https://mern-insta-clone-1.onrender.com/)
+
+
 
