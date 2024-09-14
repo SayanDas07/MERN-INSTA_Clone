@@ -70,7 +70,7 @@ function Login() {
     }
   }, [])
   return (
-    <div className='flex items-center w-screen h-screen justify-center text-white min-h-[calc(100vh-64px)]'
+    <div className='flex items-center w-screen h-screen justify-center text-black min-h-[calc(100vh-64px)]'
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
