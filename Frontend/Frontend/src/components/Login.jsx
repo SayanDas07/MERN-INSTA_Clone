@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux'
 import { setAuthUser } from '@/redux/authSlice.js'
-
+import backgroundImage from '../assets/back.webp'
 
 function Login() {
   const [input, setInput] = useState({
@@ -70,7 +70,15 @@ function Login() {
     }
   }, [])
   return (
-    <div className='flex items-center w-screen h-screen justify-center'>
+    <div className='flex items-center w-screen h-screen justify-center text-white min-h-[calc(100vh-64px)]'
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+
+    >
       <form onSubmit={signupHandeler} className='shadow-lg flex flex-col gap-5 p-8'>
         <div className='my-4'>
           <h1 className='text-center font-bold text-xl'>MINI-INSTA</h1>
