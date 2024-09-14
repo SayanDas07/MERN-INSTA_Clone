@@ -89,7 +89,7 @@ function ChatPage() {
                                 <AvatarImage src={selectedUsers?.profilePicture} alt='profile' />
                                 <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
-                            <div className='flex flex-col'>
+                            <div className='flex flex-col text-white'>
                                 <span>{selectedUsers?.username}</span>
                             </div>
                         </div>
