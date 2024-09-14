@@ -73,7 +73,7 @@ function Login() {
     <div className='flex items-center w-screen h-screen justify-center'>
       <form onSubmit={signupHandeler} className='shadow-lg flex flex-col gap-5 p-8'>
         <div className='my-4'>
-          <h1 className='text-center font-bold text-xl'>LOGO</h1>
+          <h1 className='text-center font-bold text-xl'>MINI-INSTA</h1>
           <p className='text-sm text-center'>Login to see photos & videos from your friends</p>
         </div>
 
@@ -108,7 +108,7 @@ function Login() {
           )
         }
 
-        <span className='text-center'>Dosent have an account? <Link to="/signup" className='text-blue-600'>Signup</Link></span>
+        <span className='text-center'>Dont have an account? <Link to="/signup" className='text-blue-600'>Signup</Link></span>
 
       </form>
     </div>
