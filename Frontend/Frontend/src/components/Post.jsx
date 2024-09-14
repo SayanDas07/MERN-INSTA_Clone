@@ -198,7 +198,7 @@ function Post({ post }) {
         comments.length > 0 && <span onClick={() => {
           dispatch(setSelectedPost(post))
           setOpen(true)
-        }} className='text-sm text-gray-600 cursor-pointer'>view {commentLength} commnets</span>
+        }} className='text-sm text-black cursor-pointer'>view {commentLength} commnets</span>
       }
 
       <CommnetDialoge open={open} setOpen={setOpen} />
@@ -208,7 +208,7 @@ function Post({ post }) {
           placeholder='Add a comment...'
           value={text}
           onChange={changeHandler}
-          className='outline-none text-sm w-full'
+          className='outline-none text-sm w-full text-black'
         />
         {
           text && <span onClick={commentOnPostHandler} className='text-[#3BADF8] cursor-pointer'>post</span>

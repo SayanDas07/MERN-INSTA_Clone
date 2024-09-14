@@ -11,8 +11,7 @@ function MainLayout() {
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
-    }}
-      className="text-white flex items-center justify-center min-h-[calc(100vh-64px)]">
+    }}>
       <LeftSidebar />
 
       <div>
