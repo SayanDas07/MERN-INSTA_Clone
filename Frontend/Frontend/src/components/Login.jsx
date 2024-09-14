@@ -70,7 +70,7 @@ function Login() {
     }
   }, [])
   return (
-    <div className='flex items-center w-screen h-screen justify-center text-black min-h-[calc(100vh-64px)]'
+    <div className='flex items-center w-screen h-screen justify-center text-white min-h-[calc(100vh-64px)]'
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
@@ -92,7 +92,7 @@ function Login() {
             name="email"
             value={input.email}
             onChange={handleChange}
-            className="focus-visible:ring-transparent my-2"
+            className="focus-visible:ring-transparent my-2 text-black"
           />
         </div>
         <div>
@@ -102,7 +102,7 @@ function Login() {
             name="password"
             value={input.password}
             onChange={handleChange}
-            className="focus-visible:ring-transparent my-2"
+            className="focus-visible:ring-transparent my-2 text-black"
           />
         </div>
         {
