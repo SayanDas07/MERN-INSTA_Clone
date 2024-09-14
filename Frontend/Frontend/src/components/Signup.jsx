@@ -7,7 +7,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { useSelector } from 'react-redux'
-
+import backgroundImage from '../assets/back.webp'
 
 function Signup() {
   const [input, setInput] = useState({
@@ -63,7 +63,15 @@ function Signup() {
     }
   }, [])
   return (
-    <div className='flex items-center w-screen h-screen justify-center'>
+    <div className='flex items-center w-screen h-screen justify-center text-white min-h-[calc(100vh-64px)]'
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+
+    >
       <form onSubmit={signupHandeler} className='shadow-lg flex flex-col gap-5 p-8'>
         <div className='my-4'>
           <h1 className='text-center font-bold text-xl'>LOGO</h1>
@@ -76,7 +84,7 @@ function Signup() {
             name="username"
             value={input.username}
             onChange={handleChange}
-            className="focus-visible:ring-transparent my-2"
+            className="focus-visible:ring-transparent my-2 text-black"
           />
         </div>
         <div>
@@ -86,7 +94,7 @@ function Signup() {
             name="email"
             value={input.email}
             onChange={handleChange}
-            className="focus-visible:ring-transparent my-2"
+            className="focus-visible:ring-transparent my-2 text-black"
           />
         </div>
         <div>
@@ -96,7 +104,7 @@ function Signup() {
             name="password"
             value={input.password}
             onChange={handleChange}
-            className="focus-visible:ring-transparent my-2"
+            className="focus-visible:ring-transparent my-2 text-black"
           />
         </div>
         {
