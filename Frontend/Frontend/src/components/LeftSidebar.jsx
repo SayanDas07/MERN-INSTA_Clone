@@ -114,13 +114,13 @@ function LeftSidebar() {
     return (
         <div className='fixed top-0 z-10 left-0 px-4 border-r border-gray-300 w-full sm:w-[16%] md:w-[14%] lg:w-[12%] h-screen'>
             <div className='flex flex-col'>
-                <h1 className='my-8 pl-3 font-bold text-xl sm:text-left text-white'>MINI-INSTA</h1>
+                <h1 className='my-8 pl-3 font-bold text-xl sm:text-left'>MINI-INSTA</h1>
                 <div>
                     {
                         sidebarItems.map((item, index) => (
-                            <div onClick={() => sidebarHandeler(item.text)} key={index} className='flex items-center gap-3 relative hover:bg-gray-100 cursor-pointer rounded-lg p-4 my-3 text-blue-200' >
+                            <div onClick={() => sidebarHandeler(item.text)} key={index} className='flex items-center gap-3 relative hover:bg-gray-100 cursor-pointer rounded-lg p-4 my-3' >
                                 {item.icon}
-                                <span className='hidden sm:block text-white'>{item.text}</span>
+                                <span className='hidden sm:block'>{item.text}</span>
                                 {
                                     item.text === 'Notifications' && filteredNotifications.length > 0 && (
                                         <Popover onOpenChange={(isOpen) => {
@@ -159,7 +159,7 @@ function LeftSidebar() {
                                                         )
                                                     }
                                                 </div>
-                                                
+
                                             </PopoverContent>
                                         </Popover>
                                     )
@@ -179,7 +179,6 @@ function LeftSidebar() {
 }
 
 export default LeftSidebar
-
 
 
 
